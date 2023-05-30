@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta name="description" content="" />
+        <meta name="author" content="Lucas do Prado Pinto"/>
+
+        <title>UTFPR</title>
+
+        <!--Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.png" />
+
+        <!--CSS-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+		<!-- Font Awesome icons (free version)-->
+		<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+        <style>
+            body{
+                background-image: url("./assets/images/back.jpg");
+                background-repeat: no-repeat; /* Do not repeat the image */
+                background-size: cover; /* Resize the background image to cover the entire container */
+                height: 100vh;
+            }  
+            
+            .daySelected {
+                background-color: #5075a1;
+            }
+
+            .accordion-button:not(.collapsed) {
+                background-color: #80aadcff;
+            }
+
+        </style>
+
+    </head>
+
+    <body class="body">
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div id="headerContent" class="col-12 bg-white" style="height: 7.5vh; padding-top: 2.5vh; padding-bottom: 2.5vh;">
+                    <a onclick="clickMenu()"><i class="fas fa-bars ms-3 me-4" style="line-height: 2.5vh;"></i></a>
+                    <span id="titleContent" class="fw-bold" style="line-height: 2.5vh;">Aluno</span>
+                </div>
+
+                <div id="bodyContentLoading" class="d-none row justify-content-center col-10 p-0 text-center align-items-center" style="height: 75vh; margin-top: 2.5vh">
+
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+
+                </div>
+
+                <div id="bodyContentUser" class="row justify-content-center col-10 bg-white rrounded-1 shadow p-0 text-center overflow-auto align-items-center" style="height: 75vh; margin-top: 2.5vh">
+
+                </div>
+
+                <div id="bodyContentClock" class="d-none row justify-content-center col-12 p-0 text-center align-items-baseline" style="height: 77.5vh; color: #fff;">
+                    <div class="col-12 row p-0 justify-content-center ">
+                    
+                        <div class="col-12 py-3 fw-bold" style="background-color: #80aadcff;">
+                            Engenharia De Computação
+                        </div>
+
+                        <div class="col-12 row" style="background-color: #80aadcff;">
+
+                            
+                            <div id="dayWeek1" class="col-2 border-end py-2" style="font-size: 12px; cursor: pointer;">SEG</div>
+                            <div id="dayWeek2" class="col-2 border-end py-2" style="font-size: 12px; cursor: pointer;">TER</div>
+                            <div id="dayWeek3" class="col-2 border-end py-2" style="font-size: 12px; cursor: pointer;">QUA</div>
+                            <div id="dayWeek4" class="col-2 border-end py-2" style="font-size: 12px; cursor: pointer;">QUI</div>
+                            <div id="dayWeek5" class="col-2 border-end py-2" style="font-size: 12px; cursor: pointer;">SEX</div>
+                            <div id="dayWeek6" class="col-2 py-2" style="font-size: 12px; cursor: pointer;">SAB</div>
+
+                        </div>
+            
+                        <div class="col-10 mt-3 rrounded-1 py-3" style="background-color: #80aadcff;">
+                            Sem aulas neste dia! <i class="far fa-smile"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="bodyContentMenu" class="d-none row justify-content-center col-12 p-0 text-center align-items-baseline overflow-auto" style="height: 77.5vh; color: #fff;">
+                    <div class="col-12 row p-0 justify-content-center ">
+                    
+                        <div class="col-12 py-3 fw-bold" style="background-color: #80aadcff;">
+                            Engenharia De Computação
+                        </div>
+
+                        <div class="col-12 row">
+                            <div class="accordion accordion-flush" id="accordionFlush"></div>
+                        </div>
+            
+                    </div>
+
+                </div>
+
+                <div id="footerContent" class="col-12 row d-flex align-items-end p-0 pb-2" style="height: 15vh">
+                    <div class="col-9"></div>
+                    <div class="col-3">
+                        <a class="" onclick="clickUserClock()"><img id="imageUserClock" src="./assets/images/clock.png" width="100%"></a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <script id="accordionValuesTemplate" type="text/x-handlebars">
+
+            {{#each allGrade}}          
+                <div class="accordion-item my-3">
+                    <h2 class="accordion-header" id="flush-heading{{@index}}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{@index}}" aria-expanded="false" aria-controls="flush-collapse{{@index}}">
+                            {{this.[0]}}º Período
+                        </button>
+                    </h2>
+
+                    
+                        <div id="flush-collapse{{@index}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{@index}}" data-bs-parent="#accordionFlush">
+                            <div class="accordion-body p-0">
+                                <ul class="list-group">
+                                    {{#each this.[1]}}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span class="badge rounded-pill" style="background-color: #80aadcff;">{{this.[0]}}</span>
+                                            {{this.[1]}}
+                                        </li>
+                                   {{/each}}
+                                </ul>
+                            </div>
+                        </div>
+  
+                </div>
+            {{/each}}
+        </script>
+
+        <script id="userDataTemplate" type="text/x-handlebars">
+            <div class="row justify-content-center col-12 mt-3">
+                <div class="col-10">
+                    <img src="./assets/images/mec.png" width="100%">
+                
+                </div>
+
+            </div>
+
+            <div class="col-12 row justify-content-center">
+                <div class="col-6">
+                    <img src="./assets/images/{{users.photo}}.png" width="100%">
+                </div>
+            
+            </div>
+
+
+            <div class="col-12">
+                <p class="fw-bold m-0" style="">{{users.name}}</p>
+                <p class="m-0 h6" style="">{{users.course}}</p>
+                <p class="m-0 text-secondary" style="font-size: 12px;">{{users.period}}º Período</p>
+                <p class="m-0 h6" style="">Cornélio Procópio</p>
+                <p class="m-0 text-secondary" style="font-size: 12px;">Validade: {{users.expire}}</p>
+            
+            </div>
+
+
+            <div class="col-7">
+                <img src="./assets/images/{{users.photo}}RA.png" width="100%">
+            </div>
+
+        </script>
+
+
+        <!-- Scripts JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+        
+        <script>
+            document.getElementById('dayWeek' + (new Date()).getDay().toString()).classList.add("daySelected");
+
+            var isClock = true,
+                isMenu = false;
+            function clickUserClock() {
+                isClock = !isClock;
+
+                if(isClock) {
+                    document.getElementById('bodyContentClock').classList.add("d-none");
+                    document.getElementById('titleContent').innerHTML = 'Alunos';
+                    document.getElementById('imageUserClock').classList.add("d-none");
+                    document.getElementById('bodyContentLoading').classList.remove("d-none");
+                    
+                    setTimeout(() => {
+                        document.getElementById('imageUserClock').src = './assets/images/clock.png';
+                        document.getElementById('imageUserClock').classList.remove("d-none");
+                        document.getElementById('bodyContentLoading').classList.add("d-none");
+                        document.getElementById('bodyContentUser').classList.remove("d-none");
+                        
+                    }, 1000);
+                    
+                }
+                else {
+                    document.getElementById('bodyContentUser').classList.add("d-none");
+                    document.getElementById('titleContent').innerHTML = 'Horários';
+                    document.getElementById('imageUserClock').classList.add("d-none");
+                    document.getElementById('bodyContentLoading').classList.remove("d-none");
+                    setTimeout(() => {
+                        document.getElementById('imageUserClock').src = './assets/images/user.png';
+                        document.getElementById('imageUserClock').classList.remove("d-none");
+                        document.getElementById('bodyContentLoading').classList.add("d-none");
+                        document.getElementById('bodyContentClock').classList.remove("d-none");
+
+                    }, 1000);
+                }
+                
+            }
+
+            function clickMenu() {
+                isMenu = !isMenu;
+                
+                if(isMenu) {
+                    document.getElementById('bodyContentClock').classList.add("d-none");
+                    document.getElementById('bodyContentUser').classList.add("d-none");
+                    document.getElementById('titleContent').innerHTML = 'Matriz';
+                    document.getElementById('imageUserClock').classList.add("d-none");
+                    document.getElementById('bodyContentLoading').classList.remove("d-none");
+                    
+                    setTimeout(() => {
+                        document.getElementById('bodyContentLoading').classList.add("d-none");
+                        document.getElementById('bodyContentMenu').classList.remove("d-none");
+                        
+                    }, 1000);
+                    
+                }
+                else{
+                    document.getElementById('bodyContentMenu').classList.add("d-none");
+                    isClock = false
+                    clickUserClock();
+                }
+            }
+
+
+
+
+        </script>
+
+        <script src="data.js"></script>
+
+
+        <script>
+
+            const urlParams = window.location.search.replace('?','').split('&');
+
+            if(urlParams[0] != (8462941%3613).toString()){
+                document.body.innerHTML = '';
+            }
+            else {
+                allGrade.reverse();
+            
+                const accordionValues = Handlebars.compile(
+                    document.getElementById('accordionValuesTemplate').innerHTML
+                );
+                
+                document.getElementById('accordionFlush').innerHTML = accordionValues({
+                    allGrade: allGrade
+                });
+    
+                const userData = Handlebars.compile(
+                    document.getElementById('userDataTemplate').innerHTML
+                );
+                
+                document.getElementById('bodyContentUser').innerHTML = userData({
+                    users: users[urlParams[1]]
+                });
+            }
+
+        
+        </script>
+        
+    </body>
+</html>
+
+
+
+
+<!--/* 
+var allRows = $('#grade tbody')
+
+var objGrade = [];
+
+for(var i=0;i<allRows.length; i++){
+    let auxFont = allRows[i].getElementsByTagName('font'),
+        auxGrade = [];
+
+    for(var j = 0; j < auxFont.length; j+=17){
+        auxGrade.push([auxFont[j + 1].innerText, auxFont[j + 2].innerText])
+    }
+
+    objGrade[i] = [i + 1, auxGrade]
+}
+ */-->
+
+
+
+
